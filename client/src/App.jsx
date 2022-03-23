@@ -4,18 +4,6 @@ import AddNote from './components/AddNote.jsx';
 import NoteView from './components/NoteView.jsx';
 const axios = require('axios');
 
-const notes = [
-  {
-      "note": "In chemistry, resonance, also called mesomerism, is a way of describing bonding in certain molecules or ions by the combination of several contributing structures into a resonance hybrid in valence bond theory."
-  },
-  {
-      "note": "Danish astronomer, alchemist, and nobleman Tycho Brahe had a pet moose that died when it drank too much beer and fell down a flight of stairs."
-  },
-  {
-      "note": "In London, in 1814, a vat containing over 610,00 liters of beer ruptured, causing other vats to burst. As a result, more than 1,470,000L of beer burst out into the streets. 8 peeps died, so sad."
-  }
-];
-
 class App extends React.Component {
   constructor(props){
     super(props);
