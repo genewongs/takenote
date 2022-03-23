@@ -21,7 +21,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       page: 'list',
-      notes: []
+      notes: [],
+      notesToShow: [],
     };
 
     this.changePage = this.changePage.bind(this);
@@ -29,17 +30,23 @@ class App extends React.Component {
     this.addNote = this.addNote.bind(this);
     this.editNoteTitle = this.editNoteTitle.bind(this);
     this.handleSearchQuery = this.handleSearchQuery.bind(this);
+    this.loadPage = this.loadPage.bind(this);
   }
 
   componentDidMount() {
+    this.loadPage();
+  }
+
+  loadPage() {
     axios.get('http://localhost:3001/api/notes')
-      .then(response => {
-        if(response.status === 200) {
-          this.setState({
-            notes: response.data,
-          })
-        }
-      })
+    .then(response => {
+      if(response.status === 200) {
+        this.setState({
+          notes: response.data,
+          notesToShow: response.data,
+        })
+      }
+    })
   }
 
   changePage(page){
@@ -74,6 +81,7 @@ class App extends React.Component {
           let newNotes = [...this.state.notes, newNote];
           this.setState({
             notes: newNotes,
+            notesToShow: newNotes,
             page: 'list',
           });
         }
@@ -94,13 +102,13 @@ class App extends React.Component {
       });
       this.setState({
         notes: newNotes,
+        notesToShow: newNotes,
       });
     }
   }
 
   handleSearchQuery(query, showHidden) {
     event.preventDefault();
-    console.log(showHidden)
     let filtered = this.state.notes.filter(note => {
       if(note.category.toLowerCase().includes(query.toLowerCase())){
         //dont show hidden notes
@@ -117,13 +125,16 @@ class App extends React.Component {
     filtered.sort((a,b) => b.status.localeCompare(a.status));
 
     this.setState({
-      notes: filtered,
+      notesToShow: filtered,
+      page: 'query',
     })
   }
 
   pageRouter(){
     if(this.state.page === 'list'){
       return <Notes handleSearchQuery={this.handleSearchQuery} changePage={this.changePage} notes={this.state.notes} />
+    } else if (this.state.page === 'query') {
+      return <Notes handleSearchQuery={this.handleSearchQuery} changePage={this.changePage} notes={this.state.notesToShow} />
     } else if (this.state.page === 'newNote'){
       return <AddNote addNote={this.addNote} />
     } else {
